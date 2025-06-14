@@ -1,4 +1,4 @@
-# 🔐 慎亮的 Rust macOS Keychain 测试工程
+# 🔐 Rust macOS Keychain 测试工程
 
 [![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
 [![macOS](https://img.shields.io/badge/macOS-10.15+-blue.svg)](https://www.apple.com/macos)
@@ -57,20 +57,17 @@
 # 1. 安装 Rust 和开发工具
 ./install_rust.sh
 
-# 2. 创建测试证书（仅用于开发）
-make test-cert
-
-# 3. 查看所有可用命令
+# 2. 查看所有可用命令
 make help
 ```
 
-### ⚡ 一键体验
+### ⚡ 快速开始
 ```bash
-# 构建、签名并创建 DMG（推荐）
-make all
+# 构建应用
+make build
 
 # 测试 Keychain 功能
-make keychain-test
+make test
 ```
 
 ### 🎯 分步操作
@@ -78,17 +75,14 @@ make keychain-test
 # 1. 构建应用
 make build
 
-# 2. 签名应用
+# 2. 签名应用（可选，仅用于测试）
 make sign
 
-# 3. 验证签名
-make verify
-
-# 4. 创建 DMG 安装包
-make dmg
-
-# 5. 运行应用
+# 3. 运行应用
 make run
+
+# 4. 清理构建文件
+make clean
 ```
 
 ## 🔐 Keychain 功能详解
@@ -126,10 +120,12 @@ keychain.delete_password("user@example.com")?;               // 删除密码
 
 ### 📋 可用命令
 ```bash
-make keychain-test    # 运行交互式 Keychain 演示
-make keychain-info    # 显示 Keychain 系统信息
-make keychain-clean   # 清理测试数据
-make certificates     # 查看可用的签名证书
+make build      # 构建 release 版本
+make run        # 运行应用  
+make test       # 测试 Keychain 访问
+make sign       # 签名应用 (仅用于测试)
+make clean      # 清理构建文件
+make help       # 显示帮助信息
 ```
 
 ## � 项目结构
@@ -172,20 +168,17 @@ make certificates     # 查看可用的签名证书
 
 #### 开发模式
 ```bash
-# 创建测试证书
-make test-cert
+# 构建应用
+make build
 
-# 构建和签名
-make all
+# 构建和签名（测试用）
+make sign
 ```
 
 #### 生产模式
 ```bash
-# 使用生产证书签名
+# 使用生产证书签名（需要先配置证书）
 make sign CERT_NAME="Developer ID Application: Your Name (TEAM_ID)"
-
-# 公证应用
-make notarize
 ```
 
 ### 🔑 权限配置 (entitlements.plist)
@@ -223,13 +216,9 @@ make notarize
 
 ### 🔍 签名验证
 ```bash
-# 验证签名状态
-make verify
-
-# 手动验证命令
-codesign --verify --verbose shenliang.app
-codesign --display --verbose=4 shenliang.app
-codesign --display --entitlements - shenliang.app
+# 如果已签名，可手动验证签名状态
+codesign --verify --verbose target/release/shenliang
+codesign --display --verbose=4 target/release/shenliang
 ```
 
 ## � 应用公证和分发
@@ -245,8 +234,9 @@ APP_PASSWORD="xxxx-xxxx-xxxx-xxxx"  # App-specific password
 
 ### 🔄 公证流程
 ```bash
-# 自动公证
-make notarize
+# 注意：当前 Makefile 不包含公证功能
+# 如需公证，需要手动配置 notarize_app.sh 脚本
+./notarize_app.sh
 
 # 检查公证状态
 xcrun notarytool history --apple-id "your-apple-id@example.com" \
@@ -256,11 +246,9 @@ xcrun notarytool history --apple-id "your-apple-id@example.com" \
 
 ### 📦 创建分发包
 ```bash
-# 创建 DMG 安装包
-make dmg
-
-# 安装到 Applications 文件夹
-make install
+# 注意：当前 Makefile 不包含 DMG 创建功能
+# 如需创建 DMG，需要手动运行脚本
+./create_dmg.sh
 ```
 
 ## 🔧 Make 命令参考
@@ -269,19 +257,10 @@ make install
 |------|----------|
 | `make help` | 📖 显示所有可用命令 |
 | `make build` | 🔨 构建 release 版本 |
-| `make test-cert` | 🔐 创建测试证书 |
-| `make sign` | ✍️ 签名应用 |
-| `make verify` | 🔍 验证签名 |
-| `make notarize` | 📤 公证应用 |
-| `make dmg` | 📦 创建 DMG |
-| `make all` | 🚀 完整构建流程 |
-| `make install` | 📱 安装到 Applications |
 | `make run` | ▶️ 运行应用 |
+| `make test` | 🔐 测试 Keychain 访问 |
+| `make sign` | ✍️ 签名应用 (仅用于测试) |
 | `make clean` | 🗑️ 清理构建文件 |
-| `make keychain-test` | 🔐 测试 Keychain |
-| `make keychain-info` | ℹ️ 显示 Keychain 信息 |
-| `make keychain-clean` | 🧹 清理测试数据 |
-| `make certificates` | 📜 列出可用证书 |
 
 ## � 故障排除
 
@@ -289,32 +268,31 @@ make install
 
 | 问题 | 症状 | 解决方案 |
 |------|------|----------|
-| **🔐 签名失败** | `codesign` 报错 | `make certificates` 检查证书<br/>`make test-cert` 创建测试证书 |
-| **❌ Keychain 访问被拒** | 权限错误 | 检查 `entitlements.plist` 配置<br/>确认应用已正确签名 |
-| **📱 公证失败** | 上传或验证失败 | 检查 Apple ID 和 Team ID<br/>确保使用了 `--options runtime` |
-| **🚫 应用无法运行** | 双击无响应 | `make verify` 检查签名<br/>查看控制台日志 |
+| **� 构建失败** | `cargo build` 报错 | 检查 Rust 工具链是否正确安装<br/>运行 `./install_rust.sh` 重新安装 |
+| **🔐 签名失败** | `codesign` 报错 | 检查证书是否存在<br/>可以跳过签名步骤，直接运行 `make run` |
+| **❌ Keychain 访问被拒** | 权限错误 | 运行时会提示授权<br/>在系统偏好设置中允许访问 |
+| **🚫 应用无法运行** | 运行时崩溃 | 检查 macOS 版本兼容性<br/>查看终端错误输出 |
 
 ### 🔍 调试命令
 ```bash
-# 检查应用签名状态
-spctl --assess --verbose shenliang.app
+# 检查应用是否可执行
+ls -la target/release/shenliang
 
-# 检查 Keychain 权限
-security find-generic-password -s "com.yourcompany.shenliang"
+# 直接运行并查看输出
+./target/release/shenliang
 
-# 查看系统日志
-log show --predicate 'subsystem contains "com.yourcompany"' --last 1h
+# 检查依赖是否正确链接
+otool -L target/release/shenliang
 
-# 检查权限配置
-codesign --display --entitlements - shenliang.app
+# 如果已签名，检查签名状态
+codesign --verify --verbose target/release/shenliang
 ```
 
 ### 🆘 重置环境
 ```bash
 # 完全清理并重新构建
 make clean
-make test-cert
-make all
+make build
 ```
 
 ## � 相关资源
