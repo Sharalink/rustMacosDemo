@@ -1,0 +1,29 @@
+[package]
+name = "shenliang"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# macOS Keychain 访问
+security-framework = "2.9"
+security-framework-sys = "2.9"
+core-foundation = "0.9"
+
+# 如果您要构建原生 macOS 应用，可以使用以下依赖之一：
+# tauri = "1.0"  # 用于 Tauri 应用
+# cocoa = "0.24"  # 用于原生 Cocoa 应用
+# objc = "0.2"    # Objective-C 绑定
+
+# 其他实用库
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[[bin]]
+name = "shenliang"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"

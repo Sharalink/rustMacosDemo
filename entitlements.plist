@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- 基础 entitlements -->
+
+    <!-- 允许应用访问网络 -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- 允许应用作为服务器接受网络连接 -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+
+    <!-- 允许访问用户选择的文件（通过文件对话框） -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- 允许访问下载文件夹 -->
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+
+    <!-- 允许访问图片库 -->
+    <key>com.apple.security.assets.pictures.read-write</key>
+    <true/>
+
+    <!-- 允许访问音乐库 -->
+    <key>com.apple.security.assets.music.read-write</key>
+    <true/>
+
+    <!-- 允许访问电影库 -->
+    <key>com.apple.security.assets.movies.read-write</key>
+    <true/>
+
+    <!-- 允许使用摄像头 -->
+    <key>com.apple.security.device.camera</key>
+    <true/>
+
+    <!-- 允许使用麦克风 -->
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+
+    <!-- 允许使用位置服务 -->
+    <key>com.apple.security.personal-information.location</key>
+    <true/>
+
+    <!-- 允许使用地址簿 -->
+    <key>com.apple.security.personal-information.addressbook</key>
+    <true/>
+
+    <!-- 允许使用日历 -->
+    <key>com.apple.security.personal-information.calendars</key>
+    <true/>
+
+    <!-- 允许使用照片库 -->
+    <key>com.apple.security.personal-information.photos-library</key>
+    <true/>
+
+    <!-- 允许打印 -->
+    <key>com.apple.security.print</key>
+    <true/>
+
+    <!-- 允许应用间通信 -->
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+
+    <!-- 如果需要沙盒模式，设置为 true 并移除不需要的权限 -->
+    <!-- <key>com.apple.security.app-sandbox</key>
+    <true/> -->
+
+    <!-- 允许访问 USB 设备 -->
+    <key>com.apple.security.device.usb</key>
+    <true/>
+
+    <!-- 允许访问蓝牙 -->
+    <key>com.apple.security.device.bluetooth</key>
+    <true/>
+
+    <!-- 允许访问系统时钟 -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- 允许 JIT 编译（如果使用 WebView 或 JavaScript 引擎） -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- 允许加载未签名的可执行内存 -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- 允许调试器附加 -->
+    <key>com.apple.security.cs.debugger</key>
+    <true/>
+
+    <!-- 硬化运行时选项 -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <false/>
+
+    <!-- 允许 DYLD 环境变量 -->
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <false/>
+
+    <!-- 禁用可执行堆栈 -->
+    <key>com.apple.security.cs.disable-executable-page-protection</key>
+    <false/>
+
+    <!-- Keychain 访问权限 -->
+
+    <!-- 允许访问应用的 Keychain 组 -->
+    <!-- 注意：在 Rust 项目中需要使用明确的 Team ID，不能使用 Xcode 变量 -->
+    <!-- 格式：TEAM_ID.bundle_identifier -->
+    <key>keychain-access-groups</key>
+    <array>
+      <string>KDA8UG6BW5.com.yourcompany.shenliang</string>
+      <string>KDA8UG6BW5.com.yourcompany.shared</string>
+    </array>
+
+    <!-- 允许访问系统 Keychain 服务 -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- 允许应用间 Keychain 共享 -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+      <string>group.com.yourcompany.shared</string>
+    </array>
+
+    <!-- 允许访问 Security framework -->
+    <key>com.apple.security.temporary-exception.shared-preference.read-write</key>
+    <array>
+      <string>com.apple.security</string>
+    </array>
+  </dict>
+</plist>
